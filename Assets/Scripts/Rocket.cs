@@ -12,6 +12,10 @@ public class Rocket : MonoBehaviour
     [SerializeField] AudioClip success;
     [SerializeField] AudioClip death;
 
+    [SerializeField] ParticleSystem mainEngineParticles;
+    [SerializeField] ParticleSystem successParticles;
+    [SerializeField] ParticleSystem deathParticles;
+
     enum State { Alive, Dying, Transcending};
     State state = State.Alive;
 
@@ -42,6 +46,7 @@ public class Rocket : MonoBehaviour
         else
         {
             audiosource.Stop();
+            mainEngineParticles.Stop();
         }
     }
 
@@ -49,7 +54,10 @@ public class Rocket : MonoBehaviour
     {
         rigidbody.AddRelativeForce(Vector3.up * mainThrust);
         if (!audiosource.isPlaying)
+        {
             audiosource.PlayOneShot(mainEngine); //Plays an audio from start to finish not through audio source
+            mainEngineParticles.Play();
+        }
     }
 
     private void Rotate()
@@ -78,7 +86,6 @@ public class Rocket : MonoBehaviour
                 break;
             case "Finish":
                 StartSuccessSequence();
-                Invoke("LoadNextLevel", 1f); // paramterise time. Life keeps going on while we wait the 1f second
                 break;
             default:
                 StartDeathSequence();
@@ -91,6 +98,7 @@ public class Rocket : MonoBehaviour
         state = State.Dying;
         audiosource.Stop(); //We play this to stop the thrusting sound
         audiosource.PlayOneShot(death);
+        deathParticles.Play();
         Invoke("LoadFirstLevel", 1f); // paramterise time
     }
 
@@ -99,6 +107,9 @@ public class Rocket : MonoBehaviour
         state = State.Transcending;
         audiosource.Stop(); //We play this to stop the thrusting sound
         audiosource.PlayOneShot(success);
+        successParticles.Play();
+        Invoke("LoadNextLevel", 1f); // paramterise time
+
     }
 
     private void LoadNextLevel()
