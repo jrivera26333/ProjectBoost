@@ -6,11 +6,11 @@ public class Rocket : MonoBehaviour
     Rigidbody rigidbody;
     AudioSource audiosource;
 
-    [SerializeField]
-    float rcsThrust = 100f;
-
-    [SerializeField]
-    float mainThrust = 100f;
+    [SerializeField] float rcsThrust = 100f;
+    [SerializeField] float mainThrust = 100f;
+    [SerializeField] AudioClip mainEngine;
+    [SerializeField] AudioClip success;
+    [SerializeField] AudioClip death;
 
     enum State { Alive, Dying, Transcending};
     State state = State.Alive;
@@ -28,23 +28,28 @@ public class Rocket : MonoBehaviour
         //TODO stop sound on death
         if (state == State.Alive)
         {
-            Thrust();
+            RespondToThrustInput();
             Rotate();
         }
     }
 
-    private void Thrust()
+    private void RespondToThrustInput()
     {
         if (Input.GetKey(KeyCode.Space)) //Seperate if so we can thrust and rotate
         {
-            rigidbody.AddRelativeForce(Vector3.up * mainThrust);
-            if (!audiosource.isPlaying)
-                audiosource.Play();
+            ApplyThrust();
         }
         else
         {
             audiosource.Stop();
         }
+    }
+
+    private void ApplyThrust()
+    {
+        rigidbody.AddRelativeForce(Vector3.up * mainThrust);
+        if (!audiosource.isPlaying)
+            audiosource.PlayOneShot(mainEngine); //Plays an audio from start to finish not through audio source
     }
 
     private void Rotate()
@@ -72,16 +77,28 @@ public class Rocket : MonoBehaviour
             case "Friendly":
                 break;
             case "Finish":
-                state = State.Transcending;
+                StartSuccessSequence();
                 Invoke("LoadNextLevel", 1f); // paramterise time. Life keeps going on while we wait the 1f second
                 break;
             default:
-                print("Hit something deadly");
-                state = State.Dying;
-                Invoke("LoadFirstLevel", 1f); // paramterise time
-                SceneManager.LoadScene(0);
+                StartDeathSequence();
                 break;
         }
+    }
+
+    private void StartDeathSequence()
+    {
+        state = State.Dying;
+        audiosource.Stop(); //We play this to stop the thrusting sound
+        audiosource.PlayOneShot(death);
+        Invoke("LoadFirstLevel", 1f); // paramterise time
+    }
+
+    private void StartSuccessSequence()
+    {
+        state = State.Transcending;
+        audiosource.Stop(); //We play this to stop the thrusting sound
+        audiosource.PlayOneShot(success);
     }
 
     private void LoadNextLevel()
