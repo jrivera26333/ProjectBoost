@@ -24,7 +24,7 @@ public class Oscillator : MonoBehaviour
     {
         float cycles = Time.time / period; //We are timing our cycle here because we only complete a cycle when we have a whole number.
         const float tau = Mathf.PI * 2f; //A complete circle for our Sin
-        float rawSinWave = Mathf.Sin(cycles * tau); //Every cycle * tau is a complete circle then it restarts.
+        float rawSinWave = Mathf.Sin(cycles * tau); //Every (cycle * tau) is a complete circle then it restarts. Since wave by default is a wave that goes from y = -1 to y = 1
 
         print(rawSinWave);
 
