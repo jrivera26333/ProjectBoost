@@ -6,6 +6,7 @@ public class Rocket : MonoBehaviour
     Rigidbody rigidbody;
     AudioSource audiosource;
 
+    [SerializeField] float levelLoadDelay = 2f;
     [SerializeField] float rcsThrust = 100f;
     [SerializeField] float mainThrust = 100f;
     [SerializeField] AudioClip mainEngine;
@@ -99,7 +100,7 @@ public class Rocket : MonoBehaviour
         audiosource.Stop(); //We play this to stop the thrusting sound
         audiosource.PlayOneShot(death);
         deathParticles.Play();
-        Invoke("LoadFirstLevel", 1f); // paramterise time
+        Invoke("LoadFirstLevel", levelLoadDelay); // paramterise time
     }
 
     private void StartSuccessSequence()
@@ -108,7 +109,7 @@ public class Rocket : MonoBehaviour
         audiosource.Stop(); //We play this to stop the thrusting sound
         audiosource.PlayOneShot(success);
         successParticles.Play();
-        Invoke("LoadNextLevel", 1f); // paramterise time
+        Invoke("LoadNextLevel", levelLoadDelay); // paramterise time
 
     }
 
