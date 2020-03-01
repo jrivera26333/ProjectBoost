@@ -18,8 +18,7 @@ public class Rocket : MonoBehaviour
     [SerializeField] ParticleSystem successParticles;
     [SerializeField] ParticleSystem deathParticles;
 
-    enum State { Alive, Dying, Transcending};
-    State state = State.Alive;
+    bool isTransitioning;
 
     // Start is called before the first frame update
     void Start()
@@ -37,7 +36,7 @@ public class Rocket : MonoBehaviour
         }
 
         //TODO stop sound on death
-        if (state == State.Alive)
+        if (!isTransitioning)
         {
             RespondToThrustInput();
             Rotate();
@@ -65,9 +64,14 @@ public class Rocket : MonoBehaviour
         }
         else
         {
-            audiosource.Stop();
-            mainEngineParticles.Stop();
+            StopApplyingThrust();
         }
+    }
+
+    private void StopApplyingThrust()
+    {
+        audiosource.Stop();
+        mainEngineParticles.Stop();
     }
 
     private void ApplyThrust()
@@ -82,9 +86,11 @@ public class Rocket : MonoBehaviour
 
     private void Rotate()
     {
-        rigidbody.freezeRotation = true; // Before we take manual control of rotation
-        float rotationThisFrame = rcsThrust * Time.deltaTime; //Calculating our rotation this frame since all frame lengths are different
+        rigidbody.angularVelocity = Vector3.zero; //Set any velcoity due to the physics engine make it to zero
 
+        //rigidbody.freezeRotation = true; // Before we take manual control of rotation
+
+        float rotationThisFrame = rcsThrust * Time.deltaTime; //Calculating our rotation this frame since all frame lengths are different
         if (Input.GetKey(KeyCode.A))
         {
             transform.Rotate(Vector3.forward * rotationThisFrame);
@@ -94,12 +100,12 @@ public class Rocket : MonoBehaviour
             transform.Rotate(-Vector3.forward * rotationThisFrame);
         }
 
-        rigidbody.freezeRotation = false; // Resume physics control of rotation
+        //rigidbody.freezeRotation = false; // Resume physics control of rotation
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if(state != State.Alive || collisionsDisabled) { return; } // Clean as heck to make sure multiple collisions arent happening once you finish or die it stops
+        if(isTransitioning || collisionsDisabled) { return; } // Clean as heck to make sure multiple collisions arent happening once you finish or die it stops
         switch(collision.gameObject.tag)
         {
             case "Friendly":
@@ -115,7 +121,7 @@ public class Rocket : MonoBehaviour
 
     private void StartDeathSequence()
     {
-        state = State.Dying;
+        isTransitioning = true;
         audiosource.Stop(); //We play this to stop the thrusting sound
         audiosource.PlayOneShot(death);
         deathParticles.Play();
@@ -124,7 +130,7 @@ public class Rocket : MonoBehaviour
 
     private void StartSuccessSequence()
     {
-        state = State.Transcending;
+        isTransitioning = true;
         audiosource.Stop(); //We play this to stop the thrusting sound
         audiosource.PlayOneShot(success);
         successParticles.Play();
