@@ -5,6 +5,7 @@ public class Rocket : MonoBehaviour
 {
     Rigidbody rigidbody;
     AudioSource audiosource;
+    bool collisionsDisabled;
 
     [SerializeField] float levelLoadDelay = 2f;
     [SerializeField] float rcsThrust = 100f;
@@ -30,11 +31,29 @@ public class Rocket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Debug.isDebugBuild)
+        {
+            RespondToDebugKeys();
+        }
+
         //TODO stop sound on death
         if (state == State.Alive)
         {
             RespondToThrustInput();
             Rotate();
+        }
+    }
+
+    private void RespondToDebugKeys()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            LoadNextLevel();
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            collisionsDisabled = !collisionsDisabled;
         }
     }
 
@@ -80,7 +99,7 @@ public class Rocket : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(state != State.Alive) { return; } // Clean as heck to make sure multiple collisions arent happening once you finish or die it stops
+        if(state != State.Alive || collisionsDisabled) { return; } // Clean as heck to make sure multiple collisions arent happening once you finish or die it stops
         switch(collision.gameObject.tag)
         {
             case "Friendly":
@@ -115,7 +134,14 @@ public class Rocket : MonoBehaviour
 
     private void LoadNextLevel()
     {
-        SceneManager.LoadScene(1);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+        int totalNumberOfScenes = SceneManager.sceneCountInBuildSettings;
+
+        if (nextSceneIndex == totalNumberOfScenes)
+            nextSceneIndex = 0;
+        else
+            SceneManager.LoadScene(nextSceneIndex);
     }
 
     private void LoadFirstLevel()

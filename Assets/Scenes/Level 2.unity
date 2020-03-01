@@ -397,16 +397,16 @@ Transform:
   m_LocalPosition: {x: 2.0980673, y: 23.086603, z: -26.846489}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1446285797}
   - {fileID: 456932408}
+  - {fileID: 463020753}
   - {fileID: 610642382}
   - {fileID: 1022644973}
-  - {fileID: 362500737}
   - {fileID: 1341236634}
-  - {fileID: 1959129820}
-  - {fileID: 1805697727}
   - {fileID: 1415223850}
-  - {fileID: 463020753}
+  - {fileID: 1446285797}
+  - {fileID: 1805697727}
+  - {fileID: 1959129820}
+  - {fileID: 362500737}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1304,10 +1304,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4077103566310202748, guid: 270b88aebe67aca49900f2b074f9910d,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.8000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 4077103566310202748, guid: 270b88aebe67aca49900f2b074f9910d,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.8000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 4077103566310202748, guid: 270b88aebe67aca49900f2b074f9910d,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.8000001
+      objectReference: {fileID: 0}
     - target: {fileID: 4077103566310202751, guid: 270b88aebe67aca49900f2b074f9910d,
         type: 3}
       propertyPath: m_Name
       value: Directional Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 4077103566310202751, guid: 270b88aebe67aca49900f2b074f9910d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4077103566310202749, guid: 270b88aebe67aca49900f2b074f9910d,
         type: 3}
